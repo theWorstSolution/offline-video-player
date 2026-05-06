@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Offline Video Player</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .drop-zone {
+      width: 90%;
+      max-width: 900px;
+      margin: 20px;
+      padding: 20px;
+      border: 2px dashed #666;
+      border-radius: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .drop-zone.dragover {
+      border-color: #fff;
+      background: rgba(255,255,255,0.08);
+    }
+
+    video {
+      width: 90%;
+      max-width: 1000px;
+      max-height: 75vh;
+      background: black;
+      border-radius: 12px;
+    }
+
+    .controls {
+      margin: 12px;
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div id="dropZone" class="drop-zone">
+    動画ファイルをドラッグ＆ドロップするかクリックして選択
+    <input id="fileInput" type="file" accept="video/*,.mkv,.mp4,.webm,.mov,.avi" hidden />
+  </div>
+
+  <video id="video" controls></video>
+
+  <div class="controls">
+    <button id="fullscreenBtn">最大化</button>
+  </div>
+
+  <script>
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const video = document.getElementById('video');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+    function loadVideo(file) {
+      if (!file) {
+        alert('動画ファイルを選択してください');
+        return;
+      }
+
+      const allowedExtensions = ['mkv', 'mp4', 'webm', 'mov', 'avi'];
+      const ext = file.name.split('.').pop().toLowerCase();
+      if (!allowedExtensions.includes(ext)) {
+        alert('対応していない動画形式です');
+        return;
+      }
+      const url = URL.createObjectURL(file);
+      video.src = url;
+      video.play();
+    }
+
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', (e) => {
+      loadVideo(e.target.files[0]);
+    });
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      loadVideo(e.dataTransfer.files[0]);
+    });
+
+    let maximized = false;
+
+    fullscreenBtn.addEventListener('click', () => {
+      if (!maximized) {
+        video.style.width = '100vw';
+        video.style.height = '100vh';
+        video.style.maxWidth = '100vw';
+        video.style.maxHeight = '100vh';
+        video.style.borderRadius = '0';
+        dropZone.style.display = 'none';
+        document.body.style.padding = '0';
+        maximized = true;
+        fullscreenBtn.textContent = '元に戻す';
+      } else {
+        video.style.width = '90%';
+        video.style.height = '';
+        video.style.maxWidth = '1000px';
+        video.style.maxHeight = '75vh';
+        video.style.borderRadius = '12px';
+        dropZone.style.display = 'block';
+        maximized = false;
+        fullscreenBtn.textContent = '最大化';
+      }
+    });
+  </script>
+</body>
+</html>
