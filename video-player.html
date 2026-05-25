@@ -59,7 +59,7 @@
 <body>
   <div id="dropZone" class="drop-zone">
     動画ファイルをドラッグ＆ドロップするかクリックして選択
-    <input id="fileInput" type="file" accept="video/*,.mkv,.mp4,.webm,.mov,.avi" hidden />
+    <input id="fileInput" type="file" accept="video/*,.mkv,.mp4,.webm,.mov,.avi,.m4v" hidden />
   </div>
 
   <video id="video" controls></video>
@@ -80,7 +80,7 @@
         return;
       }
 
-      const allowedExtensions = ['mkv', 'mp4', 'webm', 'mov', 'avi'];
+      const allowedExtensions = ['mkv', 'mp4', 'webm', 'mov', 'avi','m4v'];
       const ext = file.name.split('.').pop().toLowerCase();
       if (!allowedExtensions.includes(ext)) {
         alert('対応していない動画形式です');
